@@ -1,5 +1,12 @@
 module transportadora
 
-sig encomenda {
+sig Pedido {
+
+documentos: Documento
+
 }
 
+sig Documento {}
+
+pred show[]{}
+run show for 3
