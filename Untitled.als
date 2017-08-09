@@ -1,0 +1,5 @@
+module transportadora
+
+sig encomenda {
+}
+
