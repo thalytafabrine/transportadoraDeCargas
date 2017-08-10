@@ -31,8 +31,6 @@ documentos: one Documento
 
 
 fact {
-	--Obrigando a transportadora estar relacionada a central de transportadoras.
-	all t:Transportadora | one t.~transportadoras
 
 	--Obrigando os pedidos a estarem relacionados a transportadora do nordeste.
 	all p:Pedido | one p.~pedidos
@@ -40,6 +38,13 @@ fact {
 	--Obrigando a todo documento estar relacionado a um pedido.
 	all d:Documento | one d.~documentos
 
+}
+
+fact Transportadora {
+	-- O número de instancias de Transportadora deve ser igual a 9, uma pra cada região
+	#Transportadora = 9
+	--Obrigando a transportadora estar relacionada a central de transportadoras.
+	all t:Transportadora | one t.~transportadoras
 }
 
 sig Documento {}
