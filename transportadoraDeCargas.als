@@ -9,7 +9,7 @@ one sig CentralTransportadora {
 
 -- Assinatura de uma transportadora genérica, todas possuem um set de caminhão
 abstract sig Transportadora {
-	caminhao: set Caminhao
+	caminhoes: set Caminhao
 }
 
 -- Assinatura das transportadoras específicas de cada estado do Nordeste
@@ -29,23 +29,25 @@ sig Caminhao {
 }
 
 sig Pedido {
-
 --Pedido tem apenas um documento (frete)
 documentos: one Documento
 }
 
+sig Documento {}
 
-
-fact {
-
-	--Obrigando os pedidos a estarem relacionados a transportadora do nordeste.
+fact Pedido {
+	--Obrigando os pedidos a estarem relacionados a um caminhao.
 	all p:Pedido | one p.~pedidos
+}
 
+fact Documento {
 	--Obrigando a todo documento estar relacionado a um pedido.
 	all d:Documento | one d.~documentos
+}
 
-	all c:Caminhao | one c.~caminhao
-
+fact Caminhao {
+	--Obrigando a todo caminhao estar relacionado a uma transportadora.
+	all c:Caminhao | one c.~caminhoes
 }
 
 fact Transportadora {
@@ -54,8 +56,6 @@ fact Transportadora {
 	--Obrigando a transportadora estar relacionada a central de transportadoras.
 	all t:Transportadora | one t.~transportadoras
 }
-
-sig Documento {}
 
 
 pred show[]{}
