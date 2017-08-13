@@ -13,27 +13,42 @@ abstract sig Transportadora {
 }
 
 -- Assinatura das transportadoras específicas de cada estado do Nordeste
-one sig TransportadoraPB extends Transportadora {}
-one sig TransportadoraPE extends Transportadora {}
-one sig TransportadoraRN extends Transportadora {}
-one sig TransportadoraAL extends Transportadora {}
-one sig TransportadoraSE extends Transportadora {}
-one sig TransportadoraBA extends Transportadora {}
-one sig TransportadoraCE extends Transportadora {}
-one sig TransportadoraPI extends Transportadora {}
-one sig TransportadoraMA extends Transportadora {}
+one sig SedePB extends Transportadora {}
+one sig FilialPE extends Transportadora {}
+one sig FilialRN extends Transportadora {}
+one sig FilialAL extends Transportadora {}
+one sig FilialSE extends Transportadora {}
+one sig FilialBA extends Transportadora {}
+one sig FilialCE extends Transportadora {}
+one sig FilialPI extends Transportadora {}
+one sig FilialMA extends Transportadora {}
 
 -- Criando caminhão(ões) para o transporte de pedidos
 sig Caminhao {
 	pedidos: set Pedido
 }
 
-sig Pedido {
+sig Pedido{
 --Pedido tem apenas um documento (frete)
 documentos: one Documento
 }
 
-sig Documento {}
+abstract sig Destino{}
+
+one sig PB extends Destino {}
+one sig PE extends Destino {}
+one sig RN extends Destino {}
+one sig AL extends Destino {}
+one sig SE extends Destino {}
+one sig BA extends Destino {}
+one sig CE extends Destino {}
+one sig PI extends Destino {}
+one sig MA extends Destino {}
+
+
+sig Documento {
+destinos: one Destino
+}
 
 fact Pedido {
 	--Obrigando os pedidos a estarem relacionados a um caminhao.
@@ -55,6 +70,10 @@ fact Transportadora {
 	#Transportadora = 9
 	--Obrigando a transportadora estar relacionada a central de transportadoras.
 	all t:Transportadora | one t.~transportadoras
+}
+
+fact Destino {
+	all d:Destino | one d.~destinos
 }
 
 
