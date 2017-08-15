@@ -1,6 +1,5 @@
 module transportadora
 
-
 one sig CentralTransportadora {
 
 	--Criando uma central de transportadoras, que possuirá todas as transportadoras do Nordeste.
@@ -13,15 +12,15 @@ abstract sig Transportadora {
 }
 
 -- Assinatura das transportadoras específicas de cada estado do Nordeste
-one sig SedePB extends Transportadora {}
-one sig FilialPE extends Transportadora {}
-one sig FilialRN extends Transportadora {}
-one sig FilialAL extends Transportadora {}
-one sig FilialSE extends Transportadora {}
-one sig FilialBA extends Transportadora {}
-one sig FilialCE extends Transportadora {}
-one sig FilialPI extends Transportadora {}
-one sig FilialMA extends Transportadora {}
+one sig TransportadoraPB extends Transportadora {}
+one sig	TransportadoraPE extends Transportadora {}
+one sig TransportadoraRN extends Transportadora {}
+one sig TransportadoraAL extends Transportadora {}
+one sig TransportadoraSE extends Transportadora {}
+one sig TransportadoraBA extends Transportadora {}
+one sig TransportadoraCE extends Transportadora {}
+one sig TransportadoraPI extends Transportadora {}
+one sig TransportadoraMA extends Transportadora {}
 
 -- Criando caminhão(ões) para o transporte de pedidos
 sig Caminhao {
@@ -30,7 +29,8 @@ sig Caminhao {
 
 sig Pedido{
 --Pedido tem apenas um documento (frete)
-documento: one Documento
+documento: one Documento,
+status: one Status
 }
 
 abstract sig Destino{}
@@ -45,6 +45,10 @@ one sig CE extends Destino {}
 one sig PI extends Destino {}
 one sig MA extends Destino {}
 
+abstract sig Status{}
+
+sig EmRota extends Status{}
+sig Entregue extends Status{}
 
 sig Documento {
 destino: one Destino
@@ -69,9 +73,17 @@ fun getCaminhoes[t: Transportadora]: Caminhao {
 	t.caminhoes
 }
 
+fun getDocumentoDoPedido[p: Pedido]: Documento{
+	p.documento
+}
+
 fact Pedido {
 	--Obrigando os pedidos a estarem relacionados a um caminhao.
 	all p:Pedido | one p.~pedidos
+}
+
+fact Status{
+	all s:Status | one s.~status
 }
 
 fact Documento {
@@ -82,6 +94,7 @@ fact Documento {
 fact Caminhao {
 	--Obrigando a todo caminhao estar relacionado a uma transportadora.
 	all c:Caminhao | one c.~caminhoes
+	
 }
 
 fact Transportadora {
@@ -95,6 +108,31 @@ fact Destino {
 	all d:Destino | one d.~destino
 }
 
+-- Predicados
+
+pred addPedidoACaminhao[c: Caminhao, p: Pedido] {
+	(p not in getPedidosDoCaminhao[c]) => c.pedidos = c.pedidos + p
+}
+
+pred deletePedidosDoCaminhao[c: Caminhao, p: Pedido] {
+	(p in  getPedidosDoCaminhao[c]) => c.pedidos = c.pedidos - p
+}
+
+pred addDocumentoAPedido[p: Pedido, d: Documento]{
+	(d in getDocumentoDoPedido[p]) => p.documento = p.documento + d
+}
+
+run addPedidoACaminhao for 1 Pedido, 1 Caminhao, 1 Status, 1 Documento, 1 Destino
+
+-- Asserções
+
+assert todosOsPedidosTemDocumento {all p: Pedido | one d: Documento | d in p.documento}
+
+assert todosOsPedidosTemUmDestino {
+	all p: Pedido | one d: Destino | d in p.documento.destino
+}
+
+assert todosOsPedidosTemUmStatus {all p: Pedido | one s: Status | s in p.status}
 
 pred show[]{}
 run show for 9
