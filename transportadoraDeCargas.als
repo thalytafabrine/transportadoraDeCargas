@@ -98,41 +98,37 @@ fact Caminhao {
 }
 
 fact Transportadora {
-	-- O número de instancias de Transportadora deve ser igual a 9, uma pra cada região
-	#Transportadora = 9
 	--Obrigando a transportadora estar relacionada a central de transportadoras.
 	all t:Transportadora | one t.~transportadoras
 }
 
+
 fact Destino {
+	--Obrigando a todo destino estar relacionado a um documento
 	all d:Destino | one d.~destino
 }
 
 -- Predicados
 
-pred addPedidoACaminhao[c: Caminhao, p: Pedido] {
-	(p not in getPedidosDoCaminhao[c]) => c.pedidos = c.pedidos + p
+pred documentoEstaEmPedido[d: Documento, p: Pedido]{
+		d in p.documento
 }
 
-pred deletePedidosDoCaminhao[c: Caminhao, p: Pedido] {
-	(p in  getPedidosDoCaminhao[c]) => c.pedidos = c.pedidos - p
+pred pedidoTemUmDestino[p: Pedido, d: Destino]{
+	d in p.documento.destino
 }
 
-pred addDocumentoAPedido[p: Pedido, d: Documento]{
-	(d in getDocumentoDoPedido[p]) => p.documento = p.documento + d
+pred pedidoTemUmStatus[p: Pedido, s: Status]{
+	s in p.status
 }
-
-run addPedidoACaminhao for 1 Pedido, 1 Caminhao, 1 Status, 1 Documento, 1 Destino
 
 -- Asserções
 
-assert todosOsPedidosTemDocumento {all p: Pedido | one d: Documento | d in p.documento}
+assert todosOsPedidosTemDocumento {all p: Pedido | one d: Documento | documentoEstaEmPedido[d, p]}
 
-assert todosOsPedidosTemUmDestino {
-	all p: Pedido | one d: Destino | d in p.documento.destino
-}
+assert todosOsPedidosTemUmDestino {all p: Pedido | one d: Destino | pedidoTemUmDestino[p,d]}
 
-assert todosOsPedidosTemUmStatus {all p: Pedido | one s: Status | s in p.status}
+assert todosOsPedidosTemUmStatus {all p: Pedido | one s: Status | pedidoTemUmStatus[p,s]}
 
 pred show[]{}
 run show for 9
