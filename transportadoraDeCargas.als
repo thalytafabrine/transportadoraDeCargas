@@ -30,7 +30,7 @@ sig Caminhao {
 
 sig Pedido{
 --Pedido tem apenas um documento (frete)
-documentos: one Documento
+documento: one Documento
 }
 
 abstract sig Destino{}
@@ -47,7 +47,26 @@ one sig MA extends Destino {}
 
 
 sig Documento {
-destinos: one Destino
+destino: one Destino
+}
+
+-- Funções Auxiliares
+
+-- Retorna o destino de um pedido
+fun getDestinoDoPedido[p: Pedido] : Destino {
+	p.documento.destino
+}
+
+-- Retorna os pedidos de um caminhão
+
+fun getPedidosDoCaminhao[c: Caminhao]: Pedido {
+	c.pedidos
+}
+
+-- Retorna os caminhoes de uma transportadora
+
+fun getCaminhoes[t: Transportadora]: Caminhao {
+	t.caminhoes
 }
 
 fact Pedido {
@@ -57,7 +76,7 @@ fact Pedido {
 
 fact Documento {
 	--Obrigando a todo documento estar relacionado a um pedido.
-	all d:Documento | one d.~documentos
+	all d:Documento | one d.~documento
 }
 
 fact Caminhao {
@@ -73,9 +92,9 @@ fact Transportadora {
 }
 
 fact Destino {
-	all d:Destino | one d.~destinos
+	all d:Destino | one d.~destino
 }
 
 
 pred show[]{}
-run show for 10
+run show for 9
