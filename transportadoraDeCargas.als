@@ -28,7 +28,6 @@ sig Caminhao {
 
 --Criando pedidos que possuirão um documento e um status.
 sig Pedido{
---Pedido tem apenas um documento (frete).
 	documento: one Documento,
 	status: one Status
 }
