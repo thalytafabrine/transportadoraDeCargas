@@ -5,12 +5,12 @@ one sig CentralTransportadora {
 	transportadoras: set Transportadora
 }
 
---Assinatura de uma transportadora genérica, todas possuem um set de caminhão
+--Assinatura de uma transportadora genérica, todas possuem um conjunto de caminhão.
 abstract sig Transportadora {
 	caminhoes: set Caminhao
 }
 
--- Assinatura das transportadoras específicas de cada estado do Nordeste
+-- Assinatura das transportadoras específicas de cada estado do Nordeste.
 one sig TransportadoraPB extends Transportadora {}
 one sig	TransportadoraPE extends Transportadora {}
 one sig TransportadoraRN extends Transportadora {}
@@ -21,23 +21,23 @@ one sig TransportadoraCE extends Transportadora {}
 one sig TransportadoraPI extends Transportadora {}
 one sig TransportadoraMA extends Transportadora {}
 
---Criando caminhão(ões) para o transporte de pedidos
+--Criando caminhão(ões) para o transporte de pedidos.
 sig Caminhao {
 	pedidos: set Pedido
 }
 
---Criando pedidos que possuirão um documento e um status
+--Criando pedidos que possuirão um documento e um status.
 sig Pedido{
---Pedido tem apenas um documento (frete)
+--Pedido tem apenas um documento (frete).
 	documento: one Documento,
 	status: one Status
 }
 
---Assinatura de um destino genérico
+--Assinatura de um destino genérico.
 abstract sig Destino{
 }
 
---Assinatura dos destinos específicos, que será cada estado do nordeste
+--Assinatura dos destinos específicos, que será cada estado do nordeste.
 one sig PB extends Destino {}
 one sig PE extends Destino {}
 one sig RN extends Destino {}
@@ -48,44 +48,44 @@ one sig CE extends Destino {}
 one sig PI extends Destino {}
 one sig MA extends Destino {}
 
---Assinatura de um status genérico
+--Assinatura de um status genérico.
 abstract sig Status{
 }
 
---Assinatura dos status específicos de cada pedido, que será ou EmRota ou Entregue
+--Assinatura dos status específicos de cada pedido, que será ou EmRota ou Entregue.
 sig EmRota extends Status{}
 sig Entregue extends Status{}
 
---Criando o documento que possuirá um destino
+--Criando o documento que possuirá um destino.
 sig Documento {
 	destino: one Destino
 }
 
 -- Funções Auxiliares
 
---Retorna o destino de um pedido
+--Retorna o destino de um pedido.
 fun getDestinoDoPedido[p: Pedido] : Destino {
 	p.documento.destino
 }
 
---Retorna os pedidos de um caminhão
+--Retorna os pedidos de um caminhão.
 fun getPedidosDoCaminhao[c: Caminhao]: Pedido {
 	c.pedidos
 }
 
---Retorna os caminhoes de uma transportadora
+--Retorna os caminhões de uma transportadora.
 fun getCaminhoes[t: Transportadora]: Caminhao {
 	t.caminhoes
 }
 
---Retorna o documento de um pedido
+--Retorna o documento de um pedido.
 fun getDocumentoDoPedido[p: Pedido]: Documento{
 	p.documento
 }
 
 
 fact Pedido {
-	--Fazendo com que todos os pedidos estejam relacionados a um caminhao (não criar pedidos orfãos).
+	--Fazendo com que todos os pedidos estejam relacionados a um caminhão (não criar pedidos orfãos).
 	all p:Pedido | one p.~pedidos
 }
 
@@ -105,7 +105,7 @@ fact Caminhao {
 }
 
 fact Transportadora {
-	--Fazendo com que todas as transportadoras estejam relacionadas a central de transportadoras (não criar transportadoras orfãs, sem a central de transportadora).
+	--Fazendo com que todas as transportadoras estejam relacionadas a central de transportadoras (não criar transportadoras orfãs).
 	all t:Transportadora | one t.~transportadoras
 }
 
@@ -142,6 +142,8 @@ assert todosOsPedidosTemDocumento {all p: Pedido | one d: Documento | documentoE
 --Fazendo uso do predicado que verifica se o pedido tem um destino relacionado.
 assert todosOsPedidosTemUmDestino {all p: Pedido | one d: Destino | pedidoTemUmDestino[p,d]}
 
+--Testando se todos os pedidos possui um status relacionado.
+--Fazendo uso do predicado que verifica se o pedido tem um status relacionado.
 assert todosOsPedidosTemUmStatus {all p: Pedido | one s: Status | pedidoTemUmStatus[p,s]}
 
 pred show[]{}
